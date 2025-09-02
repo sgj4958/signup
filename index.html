@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+    body {
+        border: 1px solid #ddd;
+        margin: 5px;
+        overflow: hidden;
+        width: calc(100% - 10px);
+        height: calc(100vh - 10px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+		gap: 5px;
+    }
+
+    /* //// */
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		list-style: none;
+	}
+
+	:root {
+		--kakao: #FEE500;
+	}
+
+	li {
+		--color: #ccc;
+		position: relative;
+		width: 350px;
+
+		label {
+			position: absolute;
+			color: #555;
+			letter-spacing: -0.5px;
+			font-size: 11px;
+			margin: 3px 10px;
+		}
+
+		input {
+			width: 100%;
+			border: 1px solid var(--color);
+			border-radius: 5px;
+			padding: 25px 10px 10px;
+			appearance: none;
+
+			&:focus {
+				background-color: color-mix(in srgb, skyblue 30%, transparent);
+				outline: none;
+			}
+
+			&::placeholder {
+				font-size: 11px;
+				letter-spacing: -0.6px;
+				opacity: .7;
+			}
+		}
+
+		p {
+			margin: 1px 3px 3px;
+			font-size: 12px;
+			color: red;
+			opacity: 0;
+			cursor: default;
+			text-wrap: nowrap;
+		}
+
+		&::after {
+			position: absolute;
+			right: 20px;
+			top: 14px;
+			color: var(--color);
+		}
+		&:has(input:user-valid) {
+			--color: green;
+		}
+		&:has(input:user-invalid) {
+			--color: red;
+		}
+		&:has(input:user-valid)::after {
+			content: "\2713";
+		}
+		&:has(input:user-invalid)::after {
+			content: "\2717";
+		}
+		&:has(input:user-invalid) p {
+			opacity: 1;
+		}
+
+		input[type="date"] {
+			font-size: 12px;
+			color: #333;
+			font-family: Arial, Helvetica, sans-serif;
+		}
+	}
+
+	button {
+		width: 100%;
+		height: 40px;
+		background: var(--kakao);
+		font-size: 16px;
+		font-weight: bold;
+		color: #333;
+		border-radius: 5px;
+		border: none;
+		margin-top: 10px;
+	}
+
+	h3 {
+		width: 350px;
+		margin-bottom: 20px;
+		span {
+			background: linear-gradient(0deg, var(--kakao) 50%, transparent 50%);
+		}
+	}
+</style>
+</head>
+<body>
+
+	<h3><span>회원정보</span>를 입력해주세요.</h3>
+	<form action="index.html" method="post" onsubmit="event.preventDefault(); const form = new FormData(this); alert(form.get('name') + '님, 회원가입을 환영합니다!');" target="_self">
+		<li>
+			<label for="id">ID</label>
+			<input id="id" name="id" type="text" required minlength="4" maxlength="12" pattern="[^0-9]\S+" title="ID" placeholder="4 ~ 12자, 숫자로 시작하거나 공백을 포함할 수 없어요.">
+			<p>올바른 아이디 형식이 아니에요.</p>
+		</li>
+		<li>
+			<label for="pw">비밀번호</label>
+			<input id="pw" name="pw" type="password" required minlength="5" maxlength="20" aria-invalid="true" pattern="(?!.*(.)\1{2,})(?=.*[a-z]).+" placeholder="5 ~ 20자, 영소문자를 포함하고 같은 숫자나 글자는 3번 이상 반복할 수 없어요." title="비밀번호" oninput="pw = this">
+			<p>올바른 비밀번호 형식이 아니에요.</p>
+		</li>
+		<li>
+			<label for="pwchk">비밀번호 확인</label>
+			<input id="pwchk" name="pwchk" type="password" required title="비밀번호확인" oninput="const check = () => this.setCustomValidity(pw.value == this.value ? '' : '비밀번호가 일치하지 않아요.'); check(); pw.addEventListener('input', check)">
+			<p>비밀번호가 일치하지 않아요.</p>
+		</li>
+		<li>
+			<label for="tel">휴대폰 번호</label>
+			<input id="tel" name="tel" type="tel" required minlength="13" maxlength="13" pattern="010(-[0-9]{4}){2}" placeholder="하이픈( - )은 자동으로 입력할게요!" title="휴대폰 번호" oninput="this.value = this.value.replace(/^(010)([0-9])+/, '$1-$2').replace(/(^010-[0-9]{4})([0-9]+)$/, '$1-$2')">
+			<p>휴대폰 번호는 010-XXXX-XXXX 형식만 가능해요.</p>
+		</li>
+		<li>
+			<label for="name">이름</label>
+			<input id="name" name="name" type="text" required minlength="2" maxlength="20" pattern="[가-힣]+" title="이름">
+			<p>이름은 한글만 입력할 수 있어요.</p>
+		</li>
+		<li>
+			<label for="email">이메일</label>
+			<input id="email" name="email" type="email" required minlength="3" maxlength="20" title="이메일">
+			<p>이메일 형식이 올바르지 않아요.</p>
+		</li>
+		<li>
+			<label for="birth">생년월일</label>
+			<input id="birth" name="birth" type="date" required title="생년월일">
+			<p>생년월일 형식이 올바르지 않아요.</p>
+		</li>
+		
+		<button type="submit">회원가입</button>
+	</form>
+
+</body>
+
+<script>
+	// input.checkValidity()
+	// input.setCustomValidity("X")
+	// input.reportValidity()
+</script>
+</html>
